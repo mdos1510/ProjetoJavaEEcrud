@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:p="http://primefaces.org/ui"
+template="/templates/modeloSistema.xhtml"
+>
+ <ui:define name="menu">
+  <ui:include src="/includes/menu.xhtml"></ui:include>
+ </ui:define>
+ 
+ <ui:define name="conteudo">
+ 
+ <h:form id="frmMe">  
+ 
+ <p:dataTable id="tbMe" emptyMessage="Nenhum registro encontrado" 
+ value="#{MBMe.itens}"
+ var="item" 
+  filteredValue="#{MBMe.itensFiltrados}"
+ paginator="true"
+ rows="10"
+ >
+ <f:facet name="header">Lista IMEI</f:facet>
+ 
+    <p:column headerText="Código" sortBy="#{item.codigo}" filterBy="#{item.codigo}">
+        <h:outputText value="#{item.codigo}"  />
+    </p:column>
+    
+    <p:column headerText="Vendedor" sortBy="#{item.vendedor}" filterBy="#{item.vendedor}">
+        <h:outputText value="#{item.vendedor}" />
+    </p:column>
+    
+      
+    <p:column headerText="Telefone" sortBy="#{item.tel}" filterBy="#{item.tel}">
+        <h:outputText value="#{item.tel}" />
+    </p:column>
+   
+    <p:column headerText="Imei1" sortBy="#{item.imei1}" filterBy="#{item.imei1}">
+        <h:outputText value="#{item.imei1}" />
+    </p:column>
+    
+     <p:column headerText="Imei2" sortBy="#{item.imei2}" filterBy="#{item.imei2}">
+        <h:outputText value="#{item.imei2}" />
+    </p:column>
+    
+     <p:column headerText="Imei3" sortBy="#{item.imei3}" filterBy="#{item.imei3}">
+        <h:outputText value="#{item.imei3}" />
+    </p:column>
+    
+     <p:column headerText="Imei4" sortBy="#{item.imei4}" filterBy="#{item.imei4}">
+        <h:outputText value="#{item.imei4}" />
+    </p:column>
+  
+    
+     <p:column headerText="Cod de Compra" sortBy="#{item.comprai.codigo}" filterBy="#{item.comprai.codigo}">
+        <h:outputText value="#{item.comprai.codigo}" />
+    </p:column>
+     
+    
+    
+    <p:column headerText="Opçõe">
+    <p:commandButton icon="ui-icon-trash"
+     oncomplete="PF('dlgiExcluir').show();" update=":frmiExcluir:pniExcluir">
+ <f:setPropertyActionListener value="#{item}" target="#{MBMe.me}"></f:setPropertyActionListener>
+    </p:commandButton>
+    
+    
+    <p:commandButton icon="ui-icon-pencil"
+     oncomplete="PF('dlgiEditar').show();" update=":frmiEditar:pniEditar">
+ <f:setPropertyActionListener value="#{item}" target="#{MBMe.me}"></f:setPropertyActionListener>
+    </p:commandButton>
+ 
+   </p:column>
+       
+   
+    <f:facet name="footer"> <p:commandButton value="Novo" actionListener="#{MBMe.prepararNovo}" 
+    oncomplete="PF('dlgiNovo').show();" update=":frmiNovo:pniNovo" icon="ui-icon-arrowthickstop-1-s"/>
+    </f:facet>
+    
+</p:dataTable> 
+</h:form>
+ 
+ 
+ <p:dialog widgetVar="dlgiNovo" closable="false" draggable="false" resizable="false"
+ header="Cadastrar Imei"
+ modal="true"  
+ appendTo="@(body)"
+ >
+ 
+ <h:form id="frmiNovo">
+ <h:panelGrid id="pniNovo" columns="2">
+ 
+ <h:outputLabel value="Vendedor"/>
+ <h:inputText size="20" maxlength="50" value="#{MBMe.me.vendedor}"/>
+ 
+ <h:outputLabel value="Telefone"/>
+ <h:inputText size="20" maxlength="50" value="#{MBMe.me.tel}"/>
+ 
+  <h:outputLabel value="Imei 1"/>
+ <h:inputText size="20" maxlength="50" value="#{MBMe.me.imei1}"/>
+ 
+  <h:outputLabel value="Imei 2"/>
+ <h:inputText size="20" maxlength="50" value="#{MBMe.me.imei2}"/>
+ 
+  <h:outputLabel value="Imei 3"/>
+ <h:inputText size="20" maxlength="50" value="#{MBMe.me.imei3}"/>
+ 
+  <h:outputLabel value="Imei 4"/>
+ <h:inputText size="20" maxlength="50" value="#{MBMe.me.imei4}"/>
+ 
+ <h:outputLabel value="Cod.Compra"/>
+ <h:inputText size="20" maxlength="50" value="#{MBMe.me.comprai.codigo}"/>
+ </h:panelGrid>
+ 
+ <!-- Botao Gravar  -->
+ <h:panelGrid columns="2">
+ <p:commandButton value="Gravar" actionListener="#{MBMe.novo}"
+ oncomplete="PF('dlgiNovo').hide();" update=":frmMe:tbMe :msgGlobal"/>
+ 
+ <p:commandButton value="Cancelar" onclick="PF('dlgiNovo').hide();"/>
+ 
+ </h:panelGrid>
+ </h:form>
+ </p:dialog>
+ 
+
+<p:dialog widgetVar="dlgiExcluir" closable="false" draggable="false" resizable="false"
+ header="Excluir Imei"
+ modal="true"  
+ appendTo="@(body)">
+ 
+ <h:form id="frmiExcluir">
+ <h:panelGrid id="pniExcluir" columns="2">
+ 
+ <h:outputText value="Código" />
+ <h:outputText value="#{MBMe.me.codigo}"/>
+ 
+ <h:outputText value="Celular" />
+ <h:outputText value="#{MBMe.me.comprai.celular}"/>
+ 
+ </h:panelGrid>
+ 
+ <h:panelGrid columns="2">
+  <p:commandButton value="Excluir" actionListener="#{MBMe.excluir}" 
+ oncomplete="PF('dlgiExcluir').hide();" update=":frmMe:tbMe :msgGlobal"/>
+ 
+ <p:commandButton value="Cancelar" onclick="PF('dlgiExcluir').hide();"/>
+ 
+ </h:panelGrid>
+ </h:form>
+ </p:dialog>
+ 
+ 
+ 
+
+<p:dialog  widgetVar="dlgiEditar" closable="false" draggable="false" resizable="false"
+header="Editar Imei"
+modal="true" 
+appendTo="@(body)">
+
+<h:form id="frmiEditar">
+<h:panelGrid id="pniEditar" columns="2">
+
+<h:outputText value="Código"/> 
+<h:outputText value ="#{MBMe.me.codigo}"/> 
+
+<h:outputText value="Vendedor"/> 
+<h:inputText value="#{MBMe.me.vendedor}"/>
+
+<h:outputText value="Telefone"/> 
+<h:inputText value="#{MBMe.me.tel}"/>
+
+<h:outputText value="Imei 1"/> 
+<h:inputText value="#{MBMe.me.imei1}"/>
+
+<h:outputText value="Imei 2"/> 
+<h:inputText value="#{MBMe.me.imei2}"/>
+
+<h:outputText value="Imei 3"/> 
+<h:inputText value="#{MBMe.me.imei3}"/>
+
+<h:outputText value="Imei 4"/> 
+<h:inputText value="#{MBMe.me.imei4}"/>
+
+
+<p:outputLabel value="Cod.Compra" />
+<h:inputText value="#{MBMe.me.comprai.codigo}"/>
+
+</h:panelGrid>
+
+
+<h:panelGrid columns="2"> 
+<p:commandButton value="Editar" actionListener="#{MBMe.editar}" 
+oncomplete="PF('dlgiEditar').hide();"
+update=":frmMe:tbMe :msgGlobal" />
+<p:commandButton value="Cancelar" 
+process="@this"
+onclick="PF('dlgiEditar').hide();"/>
+</h:panelGrid>
+</h:form>
+
+</p:dialog>
+ 
+ </ui:define>
+ 
+ </ui:composition>

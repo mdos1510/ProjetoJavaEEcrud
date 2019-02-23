@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:p="http://primefaces.org/ui"
+template="/templates/modeloSistema.xhtml"
+>
+ 
+ <ui:define name="menu">
+  <ui:include src="/includes/menu.xhtml"></ui:include>
+ </ui:define>
+ 
+ <ui:define name="conteudo">
+ 
+ <h:form id="frmCompra">  
+ 
+ <p:dataTable id="tbCompra" emptyMessage="Nenhum registro encontrado" 
+ value="#{MBCompra.itens}"
+ var="item"
+ filteredValue="#{MBCompra.itensFiltrados}" 
+ paginator="true"
+ rows="10"
+ >
+<f:facet name="header">Lista de Compra</f:facet>
+    <p:column headerText="Código" sortBy="#{item.codigo}" filterBy="#{item.codigo}">
+        <h:outputText value="#{item.codigo}"  />
+    </p:column>
+    
+     <p:column headerText="Data" sortBy="#{item.data}" filterBy="#{item.data}">
+        <h:outputText value="#{item.data}" />
+    </p:column>
+ 
+    <p:column headerText="Celular" sortBy="#{item.celular}" filterBy="#{item.celular}">
+        <h:outputText value="#{item.celular}" />
+    </p:column>
+ 
+    <p:column headerText="Preço" sortBy="#{item.preco}" filterBy="#{item.preco}">
+        <h:outputText value="#{item.preco}" />
+    </p:column>
+    
+     <p:column headerText="Estatos" sortBy="#{item.estatos}" filterBy="#{item.estatos}">
+        <h:outputText value="#{item.estatos}" />
+    </p:column>
+   
+    
+    
+    <p:column headerText="Opçõe">
+    <p:commandButton icon="ui-icon-trash"
+     oncomplete="PF('dlgcExcluir').show();" update=":frmcExcluir:pncExcluir">
+ <f:setPropertyActionListener value="#{item}" target="#{MBCompra.compra}"></f:setPropertyActionListener>
+    </p:commandButton>
+    
+    <p:commandButton icon="ui-icon-pencil"
+     oncomplete="PF('dlgcEditar').show();" update=":frmcEditar:pncEditar">
+ <f:setPropertyActionListener value="#{item}" target="#{MBCompra.compra}"></f:setPropertyActionListener>
+    </p:commandButton>
+    
+    </p:column>
+    
+   
+    <f:facet name="footer"> <p:commandButton value="Novo" actionListener="#{MBCompra.prepararNovo}" 
+    oncomplete="PF('dlgcNovo').show();" update=":frmcNovo:pncNovo" icon="ui-icon-arrowthickstop-1-s"/>
+      
+      <p:button outcome="/pages/manutencao.xhtml" value="Manutenção" icon="ui-icon-wrench" target="blank">
+      <f:param name="productId2" value="30" />
+      </p:button>
+    
+     
+      <p:button outcome="/pages/imei.xhtml" value="IMEI" icon="ui-icon-suitcase" target="blank" >
+      <f:param name="productId3" value="40" />
+      </p:button>
+    
+    </f:facet>
+    
+</p:dataTable> 
+</h:form>
+ 
+ 
+ <p:dialog widgetVar="dlgcNovo" closable="false" draggable="false" resizable="false"
+ header="Cadastrar Compra"
+ modal="true"  
+ appendTo="@(body)"
+ >
+ 
+ <h:form id="frmcNovo">
+ <h:panelGrid id="pncNovo" columns="2">
+ 
+ <h:outputLabel value="Data"/>
+ <h:inputText size="20" maxlength="50" value="#{MBCompra.compra.data}"/>
+ 
+ <h:outputLabel value="Celular"/>
+ <h:inputText size="20" maxlength="50" value="#{MBCompra.compra.celular}"/>
+ 
+ <h:outputLabel value="Preço"/>
+ <h:inputText size="20" maxlength="50" value="#{MBCompra.compra.preco}"/>
+ 
+ <h:outputLabel value="Estatos"/>
+ <h:inputText size="20" maxlength="50" value="#{MBCompra.compra.estatos}"/>
+ 
+
+ 
+ </h:panelGrid>
+ 
+ 
+ <h:panelGrid columns="2">
+ <p:commandButton value="Gravar" actionListener="#{MBCompra.novo}" 
+ oncomplete="PF('dlgcNovo').hide();"
+ update=":frmCompra:tbCompra :msgGlobal" />
+ 
+ 
+ 
+ <p:commandButton value="Cancelar" onclick="PF('dlgcNovo').hide();"/>
+ 
+ </h:panelGrid>
+ </h:form>
+ </p:dialog>
+ 
+ 
+<p:dialog widgetVar="dlgcExcluir" closable="false" draggable="false" resizable="false"
+ header="Excluir Compra"
+ modal="true"  
+ appendTo="@(body)">
+ 
+ <h:form id="frmcExcluir">
+ <h:panelGrid id="pncExcluir" columns="2">
+ 
+ <h:outputText value="Código: " />
+ <h:outputText value="#{MBCompra.compra.codigo}"/>
+ 
+ <h:outputText value="Celular: " />
+ <h:outputText value="#{MBCompra.compra.celular}"/>
+ 
+ </h:panelGrid>
+ 
+ <h:panelGrid columns="2">
+  <p:commandButton value="Excluir" actionListener="#{MBCompra.excluir}" 
+ oncomplete="PF('dlgcExcluir').hide();" update=":frmCompra:tbCompra :msgGlobal"/>
+ 
+ <p:commandButton value="Cancelar" onclick="PF('dlgcExcluir').hide();"/>
+ 
+ </h:panelGrid>
+ </h:form>
+ </p:dialog>
+ 
+ 
+ 
+<p:dialog widgetVar="dlgcEditar" closable="false" draggable="false" resizable="false"
+ header="Editar Compra"
+ modal="true"  
+ appendTo="@(body)">
+ 
+ <h:form id="frmcEditar">
+ <h:panelGrid id="pncEditar" columns="2">
+ 
+ <h:outputText value="Código" />
+ <h:outputText value="#{MBCompra.compra.codigo}"/>
+ 
+ <h:outputText value="Data" />
+ <h:inputText value="#{MBCompra.compra.data}"/>
+ 
+ <h:outputText value="Celular" />
+ <h:inputText value="#{MBCompra.compra.celular}"/>
+ 
+ 
+ <h:outputText value="Preço" />
+ <h:inputText value="#{MBCompra.compra.preco}"/>
+ 
+ <h:outputText value="Estatos" />
+ <h:inputText value="#{MBCompra.compra.estatos}"/>
+ 
+
+ 
+ </h:panelGrid>
+ 
+ <h:panelGrid columns="2">
+  <p:commandButton value="Editar" actionListener="#{MBCompra.editar}" 
+ oncomplete="PF('dlgcEditar').hide();" update=":frmCompra:tbCompra :msgGlobal"/>
+ 
+ <p:commandButton value="Cancelar" onclick="PF('dlgcEditar').hide();"/>
+ 
+ </h:panelGrid>
+ </h:form>
+ </p:dialog>
+ 
+ 
+ </ui:define>
+ 
+ </ui:composition>

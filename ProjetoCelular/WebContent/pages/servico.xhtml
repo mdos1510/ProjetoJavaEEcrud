@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:p="http://primefaces.org/ui"
+template="/templates/modeloSistema.xhtml"
+>
+ 
+ <ui:define name="menu">
+  <ui:include src="/includes/menu.xhtml"></ui:include>
+ </ui:define>
+ 
+ <ui:define name="conteudo">
+ 
+ <h:form id="frmServico">  
+ 
+ <p:dataTable id="tbServico" emptyMessage="Nenhum registro encontrado" 
+ value="#{MBServico.itens}"
+ var="item"
+ filteredValue="#{MBServico.itensFiltrados}" 
+ paginator="true"
+ rows="10"
+ >
+ <f:facet name="header">Assistência Técnica</f:facet>
+    <p:column headerText="Código" sortBy="#{item.codigo}" filterBy="#{item.codigo}">
+        <h:outputText value="#{item.codigo}"  />
+    </p:column>
+    
+     <p:column headerText="Data" sortBy="#{item.data}" filterBy="#{item.data}">
+        <h:outputText value="#{item.data}" />
+    </p:column>
+ 
+    <p:column headerText="Cliente" sortBy="#{item.cliente}" filterBy="#{item.cliente}">
+        <h:outputText value="#{item.cliente}" />
+    </p:column>
+    
+      <p:column headerText="Telefone" sortBy="#{item.tel}" filterBy="#{item.tel}">
+        <h:outputText value="#{item.tel}" />
+    </p:column>
+     
+    <p:column headerText="Celular" sortBy="#{item.celular}" filterBy="#{item.celular}">
+        <h:outputText value="#{item.celular}" />
+    </p:column>
+ 
+    <p:column headerText="Preço" sortBy="#{item.preco}" filterBy="#{item.preco}">
+        <h:outputText value="#{item.preco}" />
+    </p:column>
+    
+     <p:column headerText="Estatos" sortBy="#{item.estatos}" filterBy="#{item.estatos}">
+        <h:outputText value="#{item.estatos}" />
+    </p:column>
+     
+  
+    <p:column headerText="Opçõe">
+       <p:commandButton icon="ui-icon-trash" 
+   oncomplete="PF('dlgsExcluir').show();" update=":frmsExcluir:pnsExcluir">
+ <f:setPropertyActionListener value="#{item}" target="#{MBServico.servico}"></f:setPropertyActionListener>
+     </p:commandButton> 
+     
+   
+     <p:commandButton icon="ui-icon-pencil" 
+   oncomplete="PF('dlgsEditar').show();" 
+   update=":frmsEditar:pnsEditar">  
+ <f:setPropertyActionListener value="#{item}" target="#{MBServico.servico}"></f:setPropertyActionListener>
+     </p:commandButton> 
+     
+    </p:column>
+      
+   
+    <f:facet name="footer"> 
+    
+    <p:commandButton value="Novo" actionListener="#{MBServico.prepararNovo}" 
+    oncomplete="PF('dlgsNovo').show();" update=":frmsNovo:pnsNovo" icon="ui-icon-arrowthickstop-1-s"/>
+  
+  <p:button outcome="/pages/conserto.xhtml" value="Manutenção" icon="ui-icon-wrench" target="blank">
+    <f:param name="productId" value="20" />
+  </p:button>
+  
+  
+    
+    </f:facet>
+    
+</p:dataTable> 
+</h:form>
+ 
+ 
+ <p:dialog widgetVar="dlgsNovo" closable="false" draggable="false" resizable="false"
+ header="Cadastrar Ordem de Serviço"
+ modal="true"  
+ appendTo="@(body)"
+ >
+ 
+ <h:form id="frmsNovo">
+ <h:panelGrid id="pnsNovo" columns="2">
+ 
+ <h:outputLabel value="Data"/>
+ <h:inputText size="20" maxlength="50" value="#{MBServico.servico.data}"/>
+ 
+ <h:outputLabel value="Cliente"/>
+ <h:inputText size="20" maxlength="50" value="#{MBServico.servico.cliente}"/>
+ 
+ <h:outputLabel value="Telefone"/>
+ <h:inputText size="20" maxlength="50" value="#{MBServico.servico.tel}"/>
+ 
+ <h:outputLabel value="Celular"/>
+ <h:inputText size="20" maxlength="50" value="#{MBServico.servico.celular}"/>
+ 
+ <h:outputLabel value="Preço"/>
+ <h:inputText size="20" maxlength="50" value="#{MBServico.servico.preco}"/>
+ 
+ <h:outputLabel value="Estatos"/>
+ <h:inputText size="20" maxlength="50" value="#{MBServico.servico.estatos}"/>
+ 
+ </h:panelGrid>
+ 
+ 
+ <h:panelGrid columns="2">
+ 
+ <p:commandButton value="Gravar" actionListener="#{MBServico.novo}" 
+ oncomplete="PF('dlgsNovo').hide();" update=":frmServico:tbServico :msgGlobal"/>
+ 
+ <p:commandButton value="Cancelar" onclick="PF('dlgsNovo').hide();"/>
+ 
+ </h:panelGrid>
+ </h:form>
+ </p:dialog>
+ 
+ 
+<p:dialog widgetVar="dlgsExcluir" closable="false" draggable="false" resizable="false"
+ header="Excluir Ordem Serviço"
+ modal="true"  
+ appendTo="@(body)">
+ 
+ <h:form id="frmsExcluir">
+ <h:panelGrid id="pnsExcluir" columns="2">
+ 
+ <h:outputText value="Código: " />
+ <h:outputText value="#{MBServico.servico.codigo}"/>
+ 
+ <h:outputText value="Cliente: " />
+ <h:outputText value="#{MBServico.servico.cliente}"/>
+ 
+ <h:outputText value="Celular: " />
+ <h:outputText value="#{MBServico.servico.celular}"/>
+ 
+ </h:panelGrid>
+ 
+ <h:panelGrid columns="2">
+ <p:commandButton value="Excluir" actionListener="#{MBServico.excluir}" 
+ oncomplete="PF('dlgsExcluir').hide();" update=":frmServico:tbServico :msgGlobal"/>
+ 
+ <p:commandButton value="Cancelar" onclick="PF('dlgsExcluir').hide();"/>
+ 
+ </h:panelGrid>
+ </h:form>
+
+</p:dialog>
+  
+
+<p:dialog widgetVar="dlgsEditar" closable="false" draggable="false" resizable="false"
+ header="Editar Ordem Serviço"
+ modal="true"  
+ appendTo="@(body)">
+ 
+ <h:form id="frmsEditar">
+ <h:panelGrid id="pnsEditar" columns="2">
+ 
+ <h:outputText value="Código" />
+ <h:outputText value="#{MBServico.servico.codigo}"/>
+ 
+ <h:outputText value="Data" />
+ <h:inputText value="#{MBServico.servico.data}"/>
+ 
+  <h:outputText value="Cliente" />
+ <h:inputText value="#{MBServico.servico.cliente}"/>
+ 
+ <h:outputText value="Telefone" />
+ <h:inputText value="#{MBServico.servico.tel}"/>
+ 
+  <h:outputText value="Celular" />
+ <h:inputText value="#{MBServico.servico.celular}"/>
+ 
+ <h:outputText value="Estatos" />
+ <h:inputText value="#{MBServico.servico.estatos}"/>
+ 
+ </h:panelGrid>
+ 
+ <h:panelGrid columns="2">
+  <p:commandButton value="Editar" actionListener="#{MBServico.editar}" 
+ oncomplete="PF('dlgsEditar').hide();" update=":frmServico:tbServico :msgGlobal"/>
+ 
+ <p:commandButton value="Cancelar" onclick="PF('dlgsEditar').hide();"/>
+ 
+ </h:panelGrid>
+ </h:form>
+
+</p:dialog>
+ 
+ </ui:define>
+ 
+ </ui:composition>

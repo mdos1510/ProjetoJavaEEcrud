@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:p="http://primefaces.org/ui"
+template="/templates/modeloSistema.xhtml"
+>
+ 
+ <ui:define name="menu">
+  <ui:include src="/includes/menu.xhtml"></ui:include>
+ </ui:define>
+ 
+ <ui:define name="conteudo">
+ 
+ <h:form id="frmFornecedor">  
+ 
+ <p:dataTable id="tbFornecedor" emptyMessage="Nenhum registro encontrado" 
+ value="#{MBFo.itens}"
+ var="item" 
+  filteredValue="#{MBFo.itensFiltrados}"
+ paginator="true"
+ rows="10"
+ >
+<f:facet name="header">Lista de Fornecedores</f:facet>
+    <p:column headerText="Código" sortBy="#{item.codigo}" filterBy="#{item.codigo}">
+        <h:outputText value="#{item.codigo}"  />
+    </p:column>
+    
+     <p:column headerText="Fornecedor" sortBy="#{item.fornecedor}" filterBy="#{item.fornecedor}">
+        <h:outputText value="#{item.fornecedor}" />
+    </p:column>
+ 
+    <p:column headerText="Descrição" sortBy="#{item.produto}" filterBy="#{item.produto}">
+        <h:outputText value="#{item.produto}" />
+    </p:column>
+ 
+    <p:column headerText="Telefone" sortBy="#{item.tel}" filterBy="#{item.tel}">
+        <h:outputText value="#{item.tel}" />
+    </p:column>
+    
+     <p:column headerText="Endereço" sortBy="#{item.end}" filterBy="#{item.end}">
+        <h:outputText value="#{item.end}" />
+    </p:column>
+   
+    
+    
+    <p:column headerText="Opçõe">
+    <p:commandButton icon="ui-icon-trash"
+     oncomplete="PF('dlgfExcluir').show();" update=":frmfExcluir:pnfExcluir">
+ <f:setPropertyActionListener value="#{item}" target="#{MBFo.fornecedor}"></f:setPropertyActionListener>
+    </p:commandButton>
+    
+    <p:commandButton icon="ui-icon-pencil"
+     oncomplete="PF('dlgfEditar').show();" update=":frmfEditar:pnfEditar">
+ <f:setPropertyActionListener value="#{item}" target="#{MBFo.fornecedor}"></f:setPropertyActionListener>
+    </p:commandButton>
+    
+    </p:column>
+    
+   
+    <f:facet name="footer"> <p:commandButton value="Novo" actionListener="#{MBFo.prepararNovo}" 
+    oncomplete="PF('dlgfNovo').show();" update=":frmfNovo:pnfNovo" icon="ui-icon-arrowthickstop-1-s"/>
+    
+    </f:facet>
+    
+</p:dataTable> 
+</h:form>
+ 
+ 
+ <p:dialog widgetVar="dlgfNovo" closable="false" draggable="false" resizable="false"
+ header="Cadastrar Fornecedor"
+ modal="true"  
+ appendTo="@(body)"
+ >
+ 
+ <h:form id="frmfNovo">
+ <h:panelGrid id="pnfNovo" columns="2">
+ 
+ <h:outputLabel value="Fornecedor"/>
+ <h:inputText size="21" maxlength="50" value="#{MBFo.fornecedor.fornecedor}"/>
+ 
+ <h:outputLabel value="Descrição"/>
+ <h:inputText size="21" maxlength="50" value="#{MBFo.fornecedor.produto}"/>
+ 
+ <h:outputLabel value="Telefone"/>
+ <h:inputText size="21" maxlength="50" value="#{MBFo.fornecedor.tel}"/>
+ 
+ <h:outputLabel value="Endereço"/>
+ <h:inputText size="21" maxlength="50" value="#{MBFo.fornecedor.end}"/>
+ 
+
+ 
+ </h:panelGrid>
+ 
+ 
+ <h:panelGrid columns="2">
+ <p:commandButton value="Gravar" actionListener="#{MBFo.novo}" oncomplete="PF('dlgfNovo').hide();"
+  update=":frmFornecedor:tbFornecedor :msgGlobal" />
+ 
+ <p:commandButton value="Cancelar" onclick="PF('dlgfNovo').hide();"/>
+ 
+ </h:panelGrid>
+ </h:form>
+ </p:dialog>
+ 
+
+ 
+<p:dialog widgetVar="dlgfExcluir" closable="false" draggable="false" resizable="false"
+ header="Excluir Fornecedor"
+ modal="true"  
+ appendTo="@(body)">
+ 
+ <h:form id="frmfExcluir">
+ <h:panelGrid id="pnfExcluir" columns="2">
+ 
+ <h:outputText value="Código: " />
+ <h:outputText value="#{MBFo.fornecedor.codigo}"/>
+ 
+ <h:outputText value="Fornecedor: " />
+ <h:outputText value="#{MBFo.fornecedor.fornecedor}"/>
+ 
+ </h:panelGrid>
+ 
+ <h:panelGrid columns="2">
+  <p:commandButton value="Excluir" actionListener="#{MBFo.excluir}" 
+ oncomplete="PF('dlgfExcluir').hide();" update=":frmFornecedor:tbFornecedor :msgGlobal"/>
+ 
+ <p:commandButton value="Cancelar" onclick="PF('dlgfExcluir').hide();"/>
+ 
+ </h:panelGrid>
+ </h:form>
+ </p:dialog>
+ 
+ 
+
+<p:dialog widgetVar="dlgfEditar" closable="false" draggable="false" resizable="false"
+ header="Editar Fornecedor"
+ modal="true"  
+ appendTo="@(body)">
+ 
+ <h:form id="frmfEditar">
+ <h:panelGrid id="pnfEditar" columns="2">
+ 
+ <h:outputText value="Código" />
+ <h:outputText value="#{MBFo.fornecedor.codigo}"/>
+ 
+ <h:outputText value="Fornecedor" />
+ <h:inputText value="#{MBFo.fornecedor.fornecedor}"/>
+ 
+ <h:outputText value="Descrição" />
+ <h:inputText value="#{MBFo.fornecedor.produto}"/>
+ 
+ 
+ <h:outputText value="Telefone" />
+ <h:inputText value="#{MBFo.fornecedor.tel}"/>
+ 
+ <h:outputText value="Endereço" />
+ <h:inputText value="#{MBFo.fornecedor.end}"/>
+ 
+
+ 
+ </h:panelGrid>
+ 
+ <h:panelGrid columns="2">
+  <p:commandButton value="Editar" actionListener="#{MBFo.editar}" 
+ oncomplete="PF('dlgfEditar').hide();" update=":frmFornecedor:tbFornecedor :msgGlobal"/>
+ 
+ <p:commandButton value="Cancelar" onclick="PF('dlgfEditar').hide();"/>
+ 
+ </h:panelGrid>
+ </h:form>
+ </p:dialog>
+ 
+ 
+ </ui:define>
+ 
+ </ui:composition>

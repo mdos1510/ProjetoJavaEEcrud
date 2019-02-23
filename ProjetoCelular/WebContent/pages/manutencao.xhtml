@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:p="http://primefaces.org/ui"
+template="/templates/modeloSistema.xhtml"
+>
+ 
+ <ui:define name="menu">
+  <ui:include src="/includes/menu.xhtml"></ui:include>
+ </ui:define>
+ 
+ <ui:define name="conteudo">
+ 
+ <h:form id="frmManu"> 
+ 
+ <p:dataTable id="tbManu" emptyMessage="Nenhum registro encontrado" 
+ value="#{MBManu.itens}"
+ var="item" 
+  filteredValue="#{MBManu.itensFiltrados}"
+ paginator="true"
+ rows="10"
+ >
+ <f:facet name="header">Compra: Manutenção</f:facet>
+ 
+    <p:column headerText="Código" sortBy="#{item.codigo}" filterBy="#{item.codigo}">
+        <h:outputText value="#{item.codigo}"  />
+    </p:column>
+ 
+    <p:column headerText="Defeito" sortBy="#{item.defeito}" filterBy="#{item.defeito}">
+        <h:outputText value="#{item.defeito}" />
+    </p:column>
+ 
+    <p:column headerText="Gastos" sortBy="#{item.gastos}" filterBy="#{item.gastos}">
+        <h:outputText value="#{item.gastos}" />
+    </p:column>
+    
+    <p:column headerText="Codigo de Compra" sortBy="#{item.compra.codigo}" filterBy="#{item.compra.codigo}">
+        <h:outputText value="#{item.compra.codigo}" />
+    </p:column>
+    
+    <p:column headerText="Celular" sortBy="#{item.compra.celular}" filterBy="#{item.compra.celular}">
+        <h:outputText value="#{item.compra.celular}" />
+    </p:column>
+    
+    <p:column headerText="Fornecedor" sortBy="#{item.fornecedor.fornecedor}" filterBy="#{item.fornecedor.fornecedor}">
+        <h:outputText value="#{item.fornecedor.fornecedor}" />
+    </p:column>
+    
+    <p:column headerText="Garantia" sortBy="#{item.garantia}" filterBy="#{item.garantia}">
+        <h:outputText value="#{item.garantia}" />
+    </p:column>
+    
+   
+    <p:column headerText="Opçõe">
+    <p:commandButton icon="ui-icon-trash"
+     oncomplete="PF('dlgmExcluir').show();" update=":frmmExcluir:pnmExcluir">
+ <f:setPropertyActionListener value="#{item}" target="#{MBManu.manu}"></f:setPropertyActionListener>
+    </p:commandButton>
+    
+  
+    <p:commandButton icon="ui-icon-pencil"
+    
+     oncomplete="PF('dlgmEditar').show();" 
+  update=":frmmEditar:pnmEditar"
+  actionListener="#{MBManu.prepararEditar}" > 
+  <f:setPropertyActionListener value="#{item}" target="#{MBManu.manu}"></f:setPropertyActionListener>
+   
+    </p:commandButton>
+    
+    </p:column>
+    
+   
+    <f:facet name="footer"> <p:commandButton value="Novo" actionListener="#{MBManu.prepararNovo}" 
+    oncomplete="PF('dlgmNovo').show();" update=":frmmNovo:pnmNovo"/>
+    </f:facet>
+    
+</p:dataTable> 
+</h:form>
+ 
+ 
+ <p:dialog widgetVar="dlgmNovo" closable="false" draggable="false" resizable="false"
+ header="Cadastrar Manutencao"
+ modal="true"  
+ appendTo="@(body)"
+ >
+ 
+ <h:form id="frmmNovo">
+ <h:panelGrid id="pnmNovo" columns="2">
+ 
+ <h:outputLabel value="Defeito"/>
+ <h:inputText size="20" maxlength="50" value="#{MBManu.manu.defeito}"/>
+ 
+ <h:outputLabel value="Gastos"/>
+ <h:inputText size="20" maxlength="50" value="#{MBManu.manu.gastos}"/>
+ 
+  <h:outputLabel value="Garantia"/>
+ <h:inputText size="20" maxlength="50" value="#{MBManu.manu.garantia}"/>
+    
+ <h:outputLabel value="Cod.Compra"/>
+ <h:inputText size="20" maxlength="50" value="#{MBManu.manu.compra.codigo}"/>
+ 
+ <p:outputLabel value="Fornecedor" />
+<p:selectOneMenu value="#{MBManu.manu.fornecedor.codigo}"
+filter="true"
+
+>
+<f:selectItem itemValue="" itemLabel="Selecione um Fornecedor" />
+<f:selectItems value="#{MBManu.comboFornecedores}"
+var="item"
+itemValue="#{item.codigo}"
+itemLabel="#{item.fornecedor}"
+>
+</f:selectItems>
+</p:selectOneMenu>
+ 
+ 
+ </h:panelGrid>
+ 
+ 
+ <h:panelGrid columns="2">
+ <p:commandButton value="Gravar" actionListener="#{MBManu.novo}"
+oncomplete="PF('dlgmNovo').hide();" update=":frmManu:tbManu :msgGlobal" />
+ 
+ <p:commandButton value="Cancelar" onclick="PF('dlgmNovo').hide();"/>
+ 
+ </h:panelGrid>
+ </h:form>
+ </p:dialog>
+ 
+ 
+ 
+<p:dialog widgetVar="dlgmExcluir" closable="false" draggable="false" resizable="false"
+ header="Excluir da lista de manutenção"
+ modal="true"  
+ appendTo="@(body)">
+ 
+ 
+ <h:form id="frmmExcluir">
+ <h:panelGrid id="pnmExcluir" columns="2">
+ 
+ <h:outputText value="Código: " />
+ <h:outputText value="#{MBManu.manu.codigo}"/>
+ 
+ <h:outputText value="Celular: " />
+ <h:outputText value="#{MBManu.manu.compra.celular}"/>
+ 
+ </h:panelGrid>
+ 
+ <h:panelGrid columns="2">
+  <p:commandButton value="Excluir" actionListener="#{MBManu.excluir}" 
+ oncomplete="PF('dlgmExcluir').hide();" update=":frmManu:tbManu :msgGlobal"/>
+ 
+ <p:commandButton value="Cancelar" onclick="PF('dlgmExcluir').hide();"/>
+ 
+ </h:panelGrid>
+ 
+ </h:form>
+ </p:dialog>
+ 
+ 
+<p:dialog widgetVar="dlgmEditar" closable="false" draggable="false" resizable="false"
+ header="Editar lista de manutenção"
+ modal="true"  
+ appendTo="@(body)">
+ 
+ <h:form id="frmmEditar">
+<h:panelGrid id="pnmEditar" columns="2">
+ 
+ <h:outputText value="Código"/> 
+<h:outputText value ="#{MBManu.manu.codigo}"/> 
+
+<h:outputText value="Defeito"/> 
+<h:inputText value="#{MBManu.manu.defeito}"/>
+
+<p:outputLabel value="Preco"/>
+<h:inputText  value="#{MBManu.manu.gastos}" />
+
+<p:outputLabel value="Garantia"/>
+<h:inputText  value="#{MBManu.manu.garantia}" />
+
+<p:outputLabel value="Codigo da Compra" />
+<h:inputText value="#{MBManu.manu.compra.codigo}"/>
+
+<p:outputLabel value="Fornecedor" />
+<p:selectOneMenu value="#{MBManu.manu.fornecedor.codigo}"
+filter="true"
+
+>
+<f:selectItem itemValue="" itemLabel="Selecione um Fornecedor" />
+<f:selectItems value="#{MBManu.comboFornecedores}"
+var="item"
+itemValue="#{item.codigo}"
+itemLabel="#{item.fornecedor}"
+>
+</f:selectItems>
+</p:selectOneMenu>
+ 
+
+
+ </h:panelGrid>
+ 
+ <h:panelGrid columns="2">
+  <p:commandButton value="Editar" actionListener="#{MBManu.editar}" 
+ oncomplete="PF('dlgmEditar').hide();"
+  update=":frmManu:tbManu :msgGlobal"/>
+ 
+ <p:commandButton value="Cancelar" onclick="PF('dlgmEditar').hide();"/>
+ 
+ </h:panelGrid>
+ 
+ </h:form>
+ </p:dialog>
+ 
+ </ui:define>
+ 
+ </ui:composition>

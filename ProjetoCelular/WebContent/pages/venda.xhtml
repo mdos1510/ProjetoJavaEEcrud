@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:p="http://primefaces.org/ui"
+template="/templates/modeloSistema.xhtml"
+>
+ 
+ <ui:define name="menu">
+  <ui:include src="/includes/menu.xhtml"></ui:include>
+ </ui:define>
+ 
+ <ui:define name="conteudo">
+ 
+ <h:form id="frmVenda">  
+ 
+ <p:dataTable id="tbVenda" emptyMessage="Nenhum registro encontrado" 
+ value="#{MBVenda.itens}"
+ var="item" 
+  filteredValue="#{MBVenda.itensFiltrados}"
+ paginator="true"
+ rows="10"
+ >
+ <f:facet name="header">Lista de Vendas</f:facet>
+ 
+    <p:column headerText="Código de Venda" sortBy="#{item.codigo}" filterBy="#{item.codigo}">
+        <h:outputText value="#{item.codigo}"  />
+    </p:column>
+    
+    
+     <p:column headerText="Data" sortBy="#{item.data}" filterBy="#{item.data}">
+        <h:outputText value="#{item.data}" />
+    </p:column>
+   
+    <p:column headerText="Cliente" sortBy="#{item.cliente}" filterBy="#{item.cliente}">
+        <h:outputText value="#{item.cliente}" />
+    </p:column>
+    
+    <p:column headerText="Telefone" sortBy="#{item.tel}" filterBy="#{item.tel}">
+        <h:outputText value="#{item.tel}" />
+    </p:column>
+    
+     <p:column headerText="Codigo da Compra" sortBy="#{item.compra.codigo}" filterBy="#{item.compra.codigo}">
+        <h:outputText value="#{item.compra.codigo}" />
+    </p:column>
+    
+    <p:column headerText="Celular" sortBy="#{item.compra.celular}" filterBy="#{item.compra.celular}">
+        <h:outputText value="#{item.compra.celular}" />
+    </p:column>
+ 
+    <p:column headerText="Preço" sortBy="#{item.preco}" filterBy="#{item.preco}">
+        <h:outputText value="#{item.preco}" />
+    </p:column>
+    
+    
+  
+    <p:column headerText="Opçõe">
+    <p:commandButton icon="ui-icon-trash"
+     oncomplete="PF('dlgvExcluir').show();" update=":frmvExcluir:pnvExcluir">
+ <f:setPropertyActionListener value="#{item}" target="#{MBVenda.venda}"></f:setPropertyActionListener>
+    </p:commandButton>
+    
+   
+    <p:commandButton icon="ui-icon-pencil"
+     oncomplete="PF('dlgvEditar').show();" update=":frmvEditar:pnvEditar">
+ <f:setPropertyActionListener value="#{item}" target="#{MBVenda.venda}"></f:setPropertyActionListener>
+    </p:commandButton>
+ 
+   </p:column>
+    
+    
+    
+    
+    
+    
+   
+    <f:facet name="footer"> <p:commandButton value="Novo" actionListener="#{MBVenda.prepararNovo}" 
+    oncomplete="PF('dlgvNovo').show();" update=":frmvNovo:pnvNovo" icon="ui-icon-arrowthickstop-1-s"/>
+    </f:facet>
+    
+</p:dataTable> 
+</h:form>
+ 
+ 
+ <p:dialog widgetVar="dlgvNovo" closable="false" draggable="false" resizable="false"
+ header="Cadastrar Venda"
+ modal="true"  
+ appendTo="@(body)"
+ >
+ 
+ <h:form id="frmvNovo">
+ <h:panelGrid id="pnvNovo" columns="2">
+ 
+ <h:outputLabel value="Data"/>
+ <h:inputText size="20" maxlength="50" value="#{MBVenda.venda.data}"/>
+ 
+ <h:outputLabel value="Cliente"/>
+ <h:inputText size="20" maxlength="50" value="#{MBVenda.venda.cliente}"/>
+ 
+  <h:outputLabel value="Telefone"/>
+ <h:inputText size="20" maxlength="50" value="#{MBVenda.venda.tel}"/>
+ 
+ <h:outputLabel value="Preço"/>
+ <h:inputText size="20" maxlength="50" value="#{MBVenda.venda.preco}"/>
+ 
+ <h:outputLabel value="Cod.Compra"/>
+ <h:inputText size="20" maxlength="50" value="#{MBVenda.venda.compra.codigo}"/>
+ </h:panelGrid>
+ 
+ 
+ <h:panelGrid columns="2">
+ <p:commandButton value="Gravar" actionListener="#{MBVenda.novo}"
+ oncomplete="PF('dlgvNovo').hide();" update=":frmVenda:tbVenda :msgGlobal"/>
+ 
+ <p:commandButton value="Cancelar" onclick="PF('dlgvNovo').hide();"/>
+ 
+ </h:panelGrid>
+ </h:form>
+ </p:dialog>
+ 
+
+<p:dialog widgetVar="dlgvExcluir" closable="false" draggable="false" resizable="false"
+ header="Excluir Venda"
+ modal="true"  
+ appendTo="@(body)">
+ 
+ <h:form id="frmvExcluir">
+ <h:panelGrid id="pnvExcluir" columns="2">
+ 
+ <h:outputText value="Código: " />
+ <h:outputText value="#{MBVenda.venda.codigo}"/>
+ 
+ <h:outputText value="Cliente: " />
+ <h:outputText value="#{MBVenda.venda.cliente}"/>
+ 
+ <h:outputText value="Celular: " />
+ <h:outputText value="#{MBVenda.venda.compra.celular}"/>
+ 
+ </h:panelGrid>
+ 
+ <h:panelGrid columns="2">
+  <p:commandButton value="Excluir" actionListener="#{MBVenda.excluir}" 
+ oncomplete="PF('dlgvExcluir').hide();" update=":frmVenda:tbVenda :msgGlobal"/>
+ 
+ <p:commandButton value="Cancelar" onclick="PF('dlgvExcluir').hide();"/>
+ 
+ </h:panelGrid>
+ </h:form>
+ </p:dialog>
+ 
+ 
+ 
+<p:dialog  widgetVar="dlgvEditar" closable="false" draggable="false" resizable="false"
+header="Editar Venda"
+modal="true" 
+appendTo="@(body)">
+
+<h:form id="frmvEditar">
+<h:panelGrid id="pnvEditar" columns="2">
+
+<h:outputText value="Código"/> 
+<h:outputText value ="#{MBVenda.venda.codigo}"/> 
+
+<h:outputText value="Data"/> 
+<h:inputText value="#{MBVenda.venda.data}"/>
+
+<h:outputText value="Cliente"/> 
+<h:inputText value="#{MBVenda.venda.cliente}"/>
+
+<h:outputText value="Telefone"/> 
+<h:inputText value="#{MBVenda.venda.tel}"/>
+
+<p:outputLabel value="Preco"/>
+<h:inputText  value="#{MBVenda.venda.preco}" />
+
+
+
+<p:outputLabel value="Codigo da Compra" />
+<h:inputText value="#{MBVenda.venda.compra.codigo}"/>
+
+</h:panelGrid>
+
+
+<h:panelGrid columns="2"> 
+<p:commandButton value="Editar" actionListener="#{MBVenda.editar}" 
+oncomplete="PF('dlgvEditar').hide();"
+update=":frmVenda:tbVenda :msgGlobal" />
+<p:commandButton value="Cancelar" 
+process="@this"
+onclick="PF('dlgvEditar').hide();"/>
+</h:panelGrid>
+</h:form>
+
+</p:dialog>
+ 
+ </ui:define>
+ 
+ </ui:composition>
